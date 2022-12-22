@@ -7,8 +7,23 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/admin/docker-data/uptime-kuma/config:/app/data
+      - /home/admin/docker/uptime-kuma/data/config:/app/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptimekuma.entrypoints=http"
+      - "traefik.http.routers.uptimekuma.rule=Host(`uptimekuma.${domain}`)"
+      - "traefik.http.middlewares.uptimekuma-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.uptimekuma.middlewares=uptimekuma-https-redirect"
+      - "traefik.http.routers.uptimekuma-secure.entrypoints=https"
+      - "traefik.http.routers.uptimekuma-secure.rule=Host(`uptimekuma.${domain}`)"
+      - "traefik.http.routers.uptimekuma-secure.tls=true"
+      - "traefik.http.routers.uptimekuma-secure.service=uptimekuma"
+      - "traefik.http.services.uptimekuma.loadbalancer.server.port=80"
+      - "traefik.docker.network=rev-proxy"
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - rev-proxy
 networks:
-  default:
-    external:
-      name: npm_proxy
+  rev-proxy:
+    external: true
