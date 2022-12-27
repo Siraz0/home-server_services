@@ -6,7 +6,6 @@ services:
     restart: unless-stopped
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-          unicorn['worker_processes'] = 2
           postgresql['shared_buffers'] = "256MB"
           sidekiq['concurrency'] = 2
     ports:
