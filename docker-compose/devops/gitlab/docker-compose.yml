@@ -1,0 +1,23 @@
+version: '3.6'
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    container_name: 'gitlab'
+    restart: unless-stopped
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+          unicorn['worker_processes'] = 2
+          postgresql['shared_buffers'] = "256MB"
+          sidekiq['concurrency'] = 2
+    ports:
+      - '2222:22'
+    volumes:
+      - /home/admin/docker/gitlab/data/config:/etc/gitlab
+      - /home/admin/docker/gitlab/data/logs:/var/log/gitlab
+      - /home/admin/docker/gitlab/data/data:/var/opt/gitlab
+    shm_size: '256m'
+    networks:
+      - rev-proxy
+networks:
+    rev-proxy:
+      external: true

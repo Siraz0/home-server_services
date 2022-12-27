@@ -9,8 +9,9 @@ services:
       - '81:81'
       - '443:443'
     volumes:
-      - /home/admin/docker-data/npm_proxy:/data
+      - /home/admin/docker/npm_proxy/data:/data
+    networks:
+      - rev-proxy
 networks:
-  default:
-    external:
-      name: npm_proxy
+    rev-proxy:
+      external: true

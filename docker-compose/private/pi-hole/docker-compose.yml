@@ -22,7 +22,7 @@ services:
       - "traefik.http.routers.pihole-secure.rule=Host(`pihole.${domain}`)"
       - "traefik.http.routers.pihole-secure.tls=true"
       - "traefik.http.routers.pihole-secure.service=pihole"
-      - "traefik.http.services.pihole.loadbalancer.server.port=9000"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
       - "traefik.docker.network=rev-proxy"
     security_opt:
       - no-new-privileges:true

@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+  portainer:
+    image: portainer/portainer-ce:2.16.2
+    container_name: portainer
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/admin/docker/portainer/data:/data
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - rev-proxy
+networks:
+  rev-proxy:
+    external: true
