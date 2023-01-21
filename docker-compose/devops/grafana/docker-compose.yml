@@ -1,0 +1,16 @@
+version: '3'
+volumes:
+  grafana-data:
+    driver: local
+services:
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - rev-proxy
+networks:
+  rev-proxy:
+    external: true
