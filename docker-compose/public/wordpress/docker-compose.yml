@@ -1,0 +1,28 @@
+ervices:
+  db:
+    image: mariadb:10.6.4-focal
+    command: '--default-authentication-plugin=mysql_native_password'
+    volumes:
+      - /home/admin/docker/wordpress/data/db_data:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    expose:
+      - 3306
+      - 33060
+  wordpress:
+    image: wordpress:latest
+    volumes:
+      - /home/admin/docker/wordpress/data/wp_data:/var/www/html
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+      - WORDPRESS_DB_NAME=wordpress
+volumes:
+  db_data:
+  wp_data:

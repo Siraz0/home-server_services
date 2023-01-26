@@ -1,28 +1,17 @@
-version: '3'
+version: "2.1"
 services:
   heimdall:
-    image: linuxserver/heimdall:2.5.3
+    image: lscr.io/linuxserver/heimdall:latest
     container_name: heimdall
-    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /home/admin/docker/heimdall/data:/config
-    environment:
-      - PGID=1000
-      - PUID=1000
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.heimdall.entrypoints=http"
-      - "traefik.http.routers.heimdall.rule=Host(`dashboard.${domain}`)"
-      - "traefik.http.middlewares.heimdall-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.heimdall.middlewares=heimdall-https-redirect"
-      - "traefik.http.routers.heimdall-secure.entrypoints=https"
-      - "traefik.http.routers.heimdall-secure.rule=Host(`dashboard.${domain}`)"
-      - "traefik.http.routers.heimdall-secure.tls=true"
-      - "traefik.http.routers.heimdall-secure.service=heimdall"
-      - "traefik.http.services.heimdall.loadbalancer.server.port=80"
-      - "traefik.docker.network=rev-proxy"
+    restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     networks:
