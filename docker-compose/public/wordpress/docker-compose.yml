@@ -1,7 +1,9 @@
+version: '3'
 services:
   db:
     image: mariadb:10.6.4-focal
     command: '--default-authentication-plugin=mysql_native_password'
+    container_name: wordpress_db
     volumes:
       - /home/admin/docker/wordpress/data/db_data:/var/lib/mysql
     restart: always
@@ -22,11 +24,24 @@ services:
     volumes:
       - /home/admin/docker/wordpress/data/wp_data:/var/www/html
     restart: always
+    container_name: wordpress
     environment:
       - WORDPRESS_DB_HOST=db
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
       - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
       - WORDPRESS_DB_NAME=wordpress
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wp.entrypoints=http"
+      - "traefik.http.routers.wordpress.rule=Host(`${domain}`)"
+      - "traefik.http.middlewares.wordpress-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.wordpress.middlewares=wordpress-https-redirect"
+      - "traefik.http.routers.wordpress-secure.entrypoints=https"
+      - "traefik.http.routers.wordpress-secure.rule=Host(`${domain}`)"
+      - "traefik.http.routers.wordpress-secure.tls=true"
+      - "traefik.http.routers.wordpress-secure.service=wordpress"
+      - "traefik.http.services.wordpress.loadbalancer.server.port=80"
+      - "traefik.docker.network=rev-proxy"  
     security_opt:
       - no-new-privileges:true
     networks:
